@@ -9,5 +9,5 @@ A composition of program modules that can be integrated into a ETL pipeline.
 pip (python installation package)
 
 ### Dependencies
-playwright
+playwright  
 asyncio
