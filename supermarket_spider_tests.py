@@ -4,7 +4,8 @@ from unittest import TestCase, TextTestRunner, TestSuite
 
 class SupermarketSpiderTestCase(TestCase):
     """Test cases for the supermarket spiders."""
-
+    def test_spider():
+        # To be written...
 
 def suite():
     suite = TestSuite()
