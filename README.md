@@ -8,9 +8,9 @@ A work-in-progress ETL data pipeline. The program scrapes on-promotion product d
 - Project Mockups
 
 ## ETL Infrastructure
-BeautifulSoup and Playwright library to extract static/dynamic data.  
-ConcurrentFutures and AsyncIO library to download multiple images concurrently.
-Pytesserect library to extract data from promotion catalogs.
+BeautifulSoup and Playwright library to extract static/dynamic data.    
+ConcurrentFutures and AsyncIO library to download multiple images concurrently.  
+Pytesserect library to extract data from promotion catalogs.  
 PIL and BytesIO library to transform/load data.
 
 ## Package Managers
