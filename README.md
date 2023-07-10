@@ -1,5 +1,5 @@
 # Supermarket Scraper
-"A work-in-progress ETL data pipeline component." The program scrapes on-promotion product data from multiple South African supermarket websites: Shoprite, PicknPay to name a few. It then stores the data in binary format for future transformation and loading.
+A data extraction program that is a component of a ETL data pipeline. The program scrapes product promotion data from supermarket websites.
 
 ## Table of Contents
 - ETL Infrastructure
