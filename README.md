@@ -1,14 +1,10 @@
 # Supermarket Scraper
-A data extraction program that is a component of a ETL data pipeline. The program scrapes product promotion data from supermarket websites.
+A data extraction program that is an ETL data pipeline component. The program scrapes product promotion data from supermarket websites.
 
 ## Table of Contents
-- ETL Infrastructure
 - Package Managers
 - Dependencies
 - Project Mockups
-
-## ETL Infrastructure
-...
 
 ## Package Managers
 pip (python installation package)
