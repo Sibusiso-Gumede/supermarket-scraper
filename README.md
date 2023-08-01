@@ -10,8 +10,8 @@ A data extraction program that is an ETL data pipeline component. The program sc
 pip (python installation package)
 
 ## Dependencies    
-BeautifulSoup
-  Contains functions for mutating html files into xml.  
+BeautifulSoup  
+\tContains functions for mutating html files into xml.  
 Playwright 
   Dynamic data extraction.  
 ConcurrentFutures and AsyncIO
