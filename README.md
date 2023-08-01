@@ -11,12 +11,12 @@ pip (python installation package)
 
 ## Dependencies    
 BeautifulSoup  
-    Contains functions for mutating html files into xml.  
-Playwright 
-    Dynamic data extraction.  
+>Contains functions for mutating html files into xml.  
+Playwright
+>Dynamic data extraction.  
 ConcurrentFutures and AsyncIO
-    Download multiple images concurrently.  
-Pytesserect  
-    Extract data using OCR functions on product promotion catalogs.  
-PIL and BytesIO  
-    Transform/load data.
+>Download multiple images concurrently.  
+Pytesserect
+>Extract data using OCR functions on product promotion catalogs.  
+PIL and BytesIO
+>Transform/load data.
