@@ -1,12 +1,13 @@
 from requests import get
 from bs4 import BeautifulSoup
+from urllib import parse
 
 def send_request(self, relative_url: str) -> bytes:
-        """Sends a request and returns the response in bytes."""
-        absolute_url = urljoin(self.base_address, relative_url)
-        response = get(absolute_url)
-        response.raise_for_status()
-        return response.content
+    """Sends a request and returns the response in bytes."""
+    absolute_url = parse.urljoin(self.base_address, relative_url)
+    response = get(absolute_url)
+    response.raise_for_status()
+    return response.content
     
     def parse_response(self, resp_content: bytes) -> BeautifulSoup:
         """Parses the response into a navigatable tree structure."""
