@@ -1,22 +1,20 @@
 # Supermarket Scraper
 A data extraction program that is an ETL data pipeline component. The program scrapes product promotion data from supermarket websites.
 
-## Table of Contents
+## Table of Contents  
+- Database ERD
 - Package Managers
 - Dependencies
 - Project Mockups
+## Database ERD
+![DB_Diagram](C:\Users\Acer\Documents\dev_env\Projects\discount_my_groceries\supermarket scraper\supermarket-database-diagram.jpg)
 
-## Package Managers
+## Package Managers  
 pip (python installation package)
 
-## Dependencies    
-<u>BeautifulSoup</u>  
-&nbsp; Contains functions for mutating html files into xml.  
-<u>Playwright</u>  
-&nbsp; Dynamic data extraction.  
-<u>ConcurrentFutures and AsyncIO</u>  
-&nbsp; Download multiple images concurrently.  
-<u>Pytesserect</u>  
-&nbsp; Extract data using OCR functions on product promotion catalogs.  
-<u>PIL and BytesIO</u>  
-&nbsp; Transform/load data.
+## Dependencies  
+BeautifulSoup - Contains functions for mutating html files into xml.  
+Playwright - Dynamic data extraction.  
+ConcurrentFutures and AsyncIO - Download multiple images concurrently.  
+Pytesserect - Extract data using OCR functions on product promotion catalogs.  
+PIL and BytesIO - Transform/load data.
