@@ -7,7 +7,7 @@ A data extraction program that is an ETL data pipeline component. The program sc
 - Dependencies
 - Project Mockups
 ## Database ERD
-![DB_Diagram](https://github.com/Sibusiso-Gumede/supermarket-scraper/blob/master/product-promotions-database-diagram.jpg)
+![DB_Diagram](https://github.com/Sibusiso-Gumede/supermarket-scraper/blob/master/product-promotions-erd.jpg)
 
 ## Package Managers  
 pip (python installation package)
