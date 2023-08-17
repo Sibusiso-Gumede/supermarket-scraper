@@ -1,6 +1,6 @@
-from generic_api import Supermarket
+from supermarket_apis.generic_api import Supermarket
 from playwright.async_api import async_playwright, Route
-from woolworths_api import Woolworths
+from supermarket_apis.woolworths_api import Woolworths
 import asyncio
 
 async def handle_route(route: Route) -> None:
