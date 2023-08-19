@@ -1,5 +1,5 @@
 from supermarket_apis.woolworths_api import Woolworths
-from extraction_transformation.file_io import PageAsBinaryFile
+from extraction.file_io import PageAsBinaryFile
 
 from unittest import TestCase, TextTestRunner, TestSuite
 

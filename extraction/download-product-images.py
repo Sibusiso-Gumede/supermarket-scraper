@@ -1,8 +1,8 @@
 from playwright.async_api import async_playwright
 from concurrent.futures import ThreadPoolExecutor
 from file_io import BinaryContentAsImage
-from generic_api import Supermarket
-from spar_api import Spar
+from supermarket_apis.generic_api import Supermarket
+from supermarket_apis.spar_api import Spar
 import asyncio
 import requests
 
