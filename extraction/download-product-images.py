@@ -6,7 +6,6 @@ from supermarket_apis.spar_api import Spar
 import asyncio
 import requests
 
-
 async def scrape_urls(page, sm: Supermarket):
     """Captures image urls from a website using a website's selectors
         and returns the urls in a list."""
