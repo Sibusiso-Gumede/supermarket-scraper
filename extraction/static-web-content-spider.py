@@ -2,17 +2,19 @@ from requests import get
 from bs4 import BeautifulSoup
 from urllib import parse
 
-def send_request(self, relative_url: str) -> bytes:
-    """Sends a request and returns the response in bytes."""
-    absolute_url = parse.urljoin(self.base_address, relative_url)
-    response = get(absolute_url)
-    response.raise_for_status()
-    return response.content
+class StaticSpider():
     
+    def send_request(self, relative_url: str) -> bytes:
+        """Sends a request and returns the response in bytes."""
+        absolute_url = parse.urljoin(self.base_address, relative_url)
+        response = get(absolute_url)
+        response.raise_for_status()
+        return response.content
+        
     def parse_response(self, resp_content: bytes) -> BeautifulSoup:
         """Parses the response into a navigatable tree structure."""
         return BeautifulSoup(resp_content, 'lxml')
-    
+
     def capture_data(self, page: BeautifulSoup) -> None:
         """Finds and stores data that is nested within specific HTML tags."""
         
@@ -22,13 +24,6 @@ def send_request(self, relative_url: str) -> bytes:
         # Each product has to contain: id, title, product promotion description, price and url.
         # Therefore, all of these attributes have to be present within each product element
         # object before the data can be stored in the MySQL database.
-
-        # Product attributes.
-        product_id = ""
-        product_title = "" 
-        product_promotion_description = ""
-        product_price = ""
-        pdp_url = ""
             
         for product in products:
             # Find the attributes of the product and the type of object
@@ -61,7 +56,7 @@ def send_request(self, relative_url: str) -> bytes:
 
                 product_img = product.select_one('div[class="product--image"]')
                 print(product_img)
-    
+
     def __tag_or_none(self, arg, attr=None) -> str:
         """Find out if the argument passed is a Tag or NoneType object.
         Returns the argument's information in string format."""
@@ -75,7 +70,7 @@ def send_request(self, relative_url: str) -> bytes:
         # Return 'NoneType'.
         else:
             return str(type(arg))
-    
+
     def __download_product_image(self, img_absolute_url: str) -> None:
         """Sends a request to the 'assets' application of the Woolworths website and stores the response."""
         
