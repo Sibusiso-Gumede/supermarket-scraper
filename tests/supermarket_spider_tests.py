@@ -1,4 +1,4 @@
-from supermarket_apis.woolworths_api import Woolworths
+from supermarket_apis.spar_api import Spar
 from extraction.file_io import PageAsBinaryFile
 
 from unittest import TestCase, TextTestRunner, TestSuite
@@ -6,7 +6,7 @@ from unittest import TestCase, TextTestRunner, TestSuite
 class SupermarketSpiderTestCase(TestCase):
     """Test cases for the supermarket spiders."""
     def test_spider():
-        # To be written...
+        
         print('spider')
 
 def suite():

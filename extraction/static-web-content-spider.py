@@ -1,19 +1,19 @@
 from requests import get
 from bs4 import BeautifulSoup
-from urllib import parse
+from urllib.parse import urljoin
 
-class StaticSpider():
-    
-    def send_request(self, relative_url: str) -> bytes:
+def send_request(self, relative_url: str) -> bytes:
         """Sends a request and returns the response in bytes."""
-        absolute_url = parse.urljoin(self.base_address, relative_url)
+        absolute_url = urljoin(self.base_address, relative_url)
         response = get(absolute_url)
         response.raise_for_status()
         return response.content
         
-    def parse_response(self, resp_content: bytes) -> BeautifulSoup:
-        """Parses the response into a navigatable tree structure."""
-        return BeautifulSoup(resp_content, 'lxml')
+def parse_response(self, resp_content: bytes) -> BeautifulSoup:
+    """Parses the response into a navigatable tree structure."""
+    return BeautifulSoup(resp_content, 'lxml')
+
+class WoolworthsStaticSpider():
 
     def capture_data(self, page: BeautifulSoup) -> None:
         """Finds and stores data that is nested within specific HTML tags."""
