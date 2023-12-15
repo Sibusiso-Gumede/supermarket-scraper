@@ -15,7 +15,7 @@ class Spar(Supermarket):
 			'product_title': '',
 			'product_price': '',
 			'product_promo': '',
-			'product_img': 'div[class="item-image"] > img[width="168px"]',
+			'product_img': 'a[class="Click to Zoom"]',
 		}		
 		self.page_increment = 1
 
