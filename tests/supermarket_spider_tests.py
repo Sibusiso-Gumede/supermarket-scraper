@@ -1,4 +1,4 @@
-from supermarket_apis.spar_api import Spar
+from extraction.static_web_content_spider import SparStaticSpider
 from extraction.file_io import PageAsBinaryFile
 
 from unittest import TestCase, TextTestRunner, TestSuite

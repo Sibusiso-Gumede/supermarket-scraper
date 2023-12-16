@@ -83,4 +83,5 @@ class SparStaticSpider():
         products = page.find_all('ul[class="slides"] > li[style^="width"]')
 
         for product in products:
-            product.find('')
+            product_image_url = product.find('a[class="Click to Zoom"]').attr['href']
+            print(product_image_url)
