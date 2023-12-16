@@ -1,17 +1,23 @@
 from requests import get
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+from supermarket_apis.generic_api import Supermarket
 
 def send_request(self, relative_url: str) -> bytes:
-        """Sends a request and returns the response in bytes."""
-        absolute_url = urljoin(self.base_address, relative_url)
-        response = get(absolute_url)
-        response.raise_for_status()
-        return response.content
+    """Sends a request and returns the response in bytes."""
+    absolute_url = urljoin(self.base_address, relative_url)
+    response = get(absolute_url)
+    response.raise_for_status()
+    return response.content
         
 def parse_response(self, resp_content: bytes) -> BeautifulSoup:
     """Parses the response into a navigatable tree structure."""
     return BeautifulSoup(resp_content, 'lxml')
+
+def download_product_image(self, img_absolute_url: str) -> None:
+    """Sends a request to the 'assets' application of the 
+    Woolworths website and stores the response."""
+    # TODO: add ooperations to download each product image.
 
 class WoolworthsStaticSpider():
 
@@ -70,7 +76,11 @@ class WoolworthsStaticSpider():
         # Return 'NoneType'.
         else:
             return str(type(arg))
-
-    def __download_product_image(self, img_absolute_url: str) -> None:
-        """Sends a request to the 'assets' application of the Woolworths website and stores the response."""
         
+class SparStaticSpider():
+
+    def capture_data(self, page: BeautifulSoup) -> None:
+        products = page.find_all('ul[class="slides"] > li[style^="width"]')
+
+        for product in products:
+            product.find('')
