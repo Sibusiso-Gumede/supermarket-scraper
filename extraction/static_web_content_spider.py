@@ -1,20 +1,23 @@
 from requests import get
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-from supermarket_apis.generic_api import Supermarket
 
-def send_request(self, relative_url: str) -> bytes:
+
+def send_request(base_address, relative_url = None) -> bytes:
     """Sends a request and returns the response in bytes."""
-    absolute_url = urljoin(self.base_address, relative_url)
+    if relative_url != None:
+        absolute_url = urljoin(base_address, relative_url)
+    else:
+        absolute_url = base_address
     response = get(absolute_url)
     response.raise_for_status()
     return response.content
         
-def parse_response(self, resp_content: bytes) -> BeautifulSoup:
+def parse_response(resp_content: bytes) -> BeautifulSoup:
     """Parses the response into a navigatable tree structure."""
     return BeautifulSoup(resp_content, 'lxml')
 
-def download_product_image(self, img_absolute_url: str) -> None:
+def download_product_image(img_absolute_url: str) -> None:
     """Sends a request to the 'assets' application of the 
     Woolworths website and stores the response."""
     # TODO: add ooperations to download each product image.
@@ -80,8 +83,7 @@ class WoolworthsStaticSpider():
 class SparStaticSpider():
 
     def capture_data(self, page: BeautifulSoup) -> None:
-        products = page.find_all('ul[class="slides"] > li[style^="width"]')
-
+        products = page.find('ul', {'class': 'slides', 'id': 'slideContainer'}).find_all('li')
         for product in products:
-            product_image_url = product.find('a[class="Click to Zoom"]').attr['href']
+            product_image_url = product.find('a', {'data-fancybox': 'promoGal'}).attrs['href']
             print(product_image_url)

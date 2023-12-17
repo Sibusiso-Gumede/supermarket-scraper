@@ -1,7 +1,7 @@
 """A child class of the Supermarket base class."""
 
 from urllib.parse import urljoin
-from generic_api import Supermarket
+from .generic_api import Supermarket
 
 class Spar(Supermarket):
 	"""The Spar supermarket class implementation."""
