@@ -7,25 +7,26 @@ from os import path, listdir
 class PageAsBinaryFile():
     """A class for storing and retrieving HTML pages in binary format."""
         
-    def store_content(content: bytes, supermarket_name, product_title=None, page_type='products', page_number=0) -> bool:
-        """Stores the contents of the page in bytes."""
+    def store_content(self, content: bytes, supermarket_name, product_title=None, page_type='products', page_number=0) -> bool:
+        """Stores the contents of the page in bytes.
+            Returns a true/false to confirm if the page
+            is successfully stored."""
         try:
             assert page_number >= 0
         except AssertionError:
-            print("Invalid argument value.")
+            print("Invalid page number")
         else:
             write_bytes = BytesIO(content)
-            path_ = ""
-            # The file path is relative to the development environment's main directory "./dev_env/file_path"
+            
             if page_type == 'products' and product_title == None:
-                path_ =  f"./discount_my_groceries/website_api's/{supermarket_name}_pages/page{page_number}.bin"
+                path_ =  f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_templates/{supermarket_name}_templates/page_{page_number}.bin"
             elif page_type == 'product_display_page' and product_title != None:
-                path_ = f"./discount_my_groceries/website_api's/{supermarket_name}_pages/{product_title}_page.bin"
-            with open(path_, "wb") as file:
+                path_ = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_templates/{supermarket_name}_templates/{product_title}_page.bin"
+            with open(path_, "xb") as file:
                 file.write(write_bytes.getbuffer())
             return path.isfile(path_)
 
-    def retrieve_content(supermarket_name, product_title=None, page_type='products', page_number=0):
+    def retrieve_content(self, supermarket_name, product_title=None, page_type='products', page_number=0):
         """Retrieves the stored contents of a page."""
         try:
             assert page_number >= 0
@@ -34,12 +35,12 @@ class PageAsBinaryFile():
         else:
             # A byte object to store the content.
             payload = bytes()
-            path_ = ""
+            path_ = str()
             # The file path is relative to the development environment's main directory "./dev_env/file_path"
             if page_type == 'products' and product_title == None:
-                path_ = f"./discount_my_groceries/website_api's/{supermarket_name}_pages/page{page_number}.bin"        
+                path_ = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_templates/{supermarket_name}_templates/page_{page_number}.bin"        
             elif page_type == 'product_display_page' and product_title != None:
-                path_ = f"./discount_my_groceries/website_api's/{supermarket_name}_pages/{product_title}_page.bin"
+                path_ = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_templates/{supermarket_name}_templates/{product_title}_page.bin"
             with open(path_, "rb") as file:
                 # The size of the buffer.
                 buffer_size = 2**10*8

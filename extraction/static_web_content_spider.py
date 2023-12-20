@@ -20,7 +20,7 @@ def parse_response(resp_content: bytes) -> BeautifulSoup:
 def download_product_image(img_absolute_url: str) -> None:
     """Sends a request to the 'assets' application of the 
     Woolworths website and stores the response."""
-    # TODO: add ooperations to download each product image.
+    # TODO: add operations to download each product image.
 
 class WoolworthsStaticSpider():
 
