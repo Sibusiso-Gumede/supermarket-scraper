@@ -26,7 +26,7 @@ class PageAsBinaryFile():
                 file.write(write_bytes.getbuffer())
             return path.isfile(path_)
 
-    def retrieve_content(self, supermarket_name, product_title=None, page_type='products', page_number=0):
+    def retrieve_content(self, supermarket_name, product_title=None, page_type='products', page_number=0) -> bytes:
         """Retrieves the stored contents of a page."""
         try:
             assert page_number >= 0
@@ -54,7 +54,7 @@ class PageAsBinaryFile():
 
 class BinaryContentAsImage():
 
-    def store_image(img: bytes, x: int, files_dir: str) -> None:
+    def store_image(self, img: bytes, x: int, files_dir: str) -> None:
         '''Stores byte content as image format.'''
         
         image_file = BytesIO(img)
@@ -67,7 +67,7 @@ class BinaryContentAsImage():
                 image.save(file, "JPEG") 
                 print("Image successfully saved.")
 
-    def retrieve_image(files_dir: str):
+    def retrieve_image(self, files_dir: str):
         '''Retrieves an image file stored in binary format and
            returns it in Image format.'''
         
