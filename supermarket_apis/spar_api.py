@@ -18,6 +18,7 @@ class Spar(Supermarket):
 			'product_img': 'a[class="Click to Zoom"]',
 		}		
 		self.page_increment = 1
+		self.product_image_urls = []
 
 	def get_supermarket_name(self) -> str:
 		"""Returns the name of the supermarket object."""
@@ -35,6 +36,14 @@ class Spar(Supermarket):
 		"""Returns a dictionary of CSS selectors."""
 		return self.page_selectors
 	
+	def get_product_image_urls(self) -> list:
+		"""Returns a list of product image urls."""
+		return self.product_image_urls
+	
+	def set_product_image_urls(self, urls) -> None:
+		"""Assigns the list of product image urls."""
+		self.product_image_urls = urls
+		
 	def format_promo_description(self) -> str or None:
 		"""Returns a formatted promotion description of the product."""
 		return None

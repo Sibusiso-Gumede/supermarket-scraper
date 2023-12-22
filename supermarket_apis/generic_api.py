@@ -22,6 +22,14 @@ class Supermarket(ABC):
     @abstractclassmethod
     def get_page_selectors(self):
         pass
+    
+    @abstractclassmethod
+    def get_product_image_urls(self):
+        pass
+
+    @abstractclassmethod
+    def set_product_image_urls(self):
+        pass
 
     @abstractclassmethod
     def format_promo_description(self):

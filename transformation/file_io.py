@@ -54,16 +54,15 @@ class PageAsBinaryFile():
 
 class BinaryContentAsImage():
 
-    def store_image(self, img: bytes, x: int, files_dir: str) -> None:
-        '''Stores byte content as image format.'''
+    def store_image(self, img: bytes, name: str) -> None:
+        '''Stores byte content in image format.'''
         
-        image_file = BytesIO(img)
         try:
-            image = Image.open(image_file)
+            image = Image.open(BytesIO(img))
         except UnidentifiedImageError or FileNotFoundError:
             print("Image not found or is invalid.")
         else:
-            with open(f'{files_dir}/attachment_{x}', "wb") as file:
+            with open(f'{files_dir}/{name}', "wb") as file:
                 image.save(file, "JPEG") 
                 print("Image successfully saved.")
 
