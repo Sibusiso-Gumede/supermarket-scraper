@@ -1,4 +1,4 @@
-"""A file input/output module for managing data."""
+# File input/output module for managing data.
 
 from io import BytesIO
 from PIL import Image, UnidentifiedImageError
@@ -59,6 +59,8 @@ class BinaryContentAsImage():
         except UnidentifiedImageError or FileNotFoundError:
             print("Image not found or is invalid.")
         else:
+            # The image name consists of a url. 
+            # Therefore, we retrieve the name of the supermarket from the base address.
             with open(f'/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{image_name.split(".")[1]}/Product Images/{image_name}', "xb") as file:
                 image.save(file, "JPEG") 
                 print("Image successfully saved.")

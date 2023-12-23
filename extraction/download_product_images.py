@@ -1,10 +1,9 @@
 #from playwright.async_api import async_playwright
 from concurrent.futures import ThreadPoolExecutor
-from transformation import BinaryContentAsImage
-from supermarket_apis import Supermarket
-from supermarket_apis import Spar
-from transformation import 
-import asyncio
+from transformation import BinaryContentAsImage, PageAsBinaryFile
+from supermarket_apis import Supermarket, Spar
+from extraction import parse_response
+#import asyncio
 import requests
 
 class DownloadDynamically():
@@ -45,7 +44,7 @@ class DownloadStatically():
         try: 
             assert sm.get_product_image_urls() is not None
         except AssertionError:
-            print("There are no image urls.")
+            print("No image urls were provided.")
         else:
             with ThreadPoolExecutor() as exec:
                 exec.map(download_image, sm.get_product_image_urls())                       
@@ -64,12 +63,12 @@ async def execute_browser(operation: str, sm: Supermarket):
         else:
             DownloadDynamically.screenshot_product_images(sm, page)
 
-def download_image(image_link):
+def download_image(image_link: str) -> None:
     response =  requests.get(image_link).content
     BinaryContentAsImage.store_image(response, image_link)
 
 if __name__ == "__main__":
     supermarket = Spar()
-    supermarket.set_product_image_urls()
+    supermarket.set_product_image_urls(parse_response(PageAsBinaryFile.retrieve_content(supermarket.name)))
     DownloadStatically.download_and_store(supermarket)
     #asyncio.run(execute_browser())
