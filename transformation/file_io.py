@@ -33,10 +33,8 @@ class PageAsBinaryFile():
         except AssertionError:
             print("Invalid argument value.")
         else:
-            # A byte object to store the content.
             payload = bytes()
             path_ = str()
-            # The file path is relative to the development environment's main directory "./dev_env/file_path"
             if page_type == 'products' and product_title == None:
                 path_ = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_templates/{supermarket_name}_templates/page_{page_number}.bin"        
             elif page_type == 'product_display_page' and product_title != None:

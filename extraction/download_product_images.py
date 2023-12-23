@@ -3,7 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 from transformation import BinaryContentAsImage
 from supermarket_apis import Supermarket
 from supermarket_apis import Spar
-#import asyncio
+import asyncio
 import requests
 
 class DownloadDynamically():
@@ -21,7 +21,7 @@ class DownloadDynamically():
                     image_urls.append(f"www.{sm.get_supermarket_name()}.co.za{await image_element.get_attribute('src')})")
             sm.set_product_image_urls(image_urls)
 
-    async def screenshot_product_images(page) -> None:
+    async def screenshot_product_images(sm: Supermarket, page) -> None:
 
         product_slides = len(await page.query_selector_all('div[class="flex-viewport"] > ul[class="slides"] > li[style^="width"]'))
         count = 1
@@ -37,19 +37,19 @@ class DownloadDynamically():
             await page.screenshot(path=path+f"/product{count}.jpeg")
             count += 1             
                        
-
-def download_image(image_link):
-    response =  requests.get(image_link).content
-    BinaryContentAsImage.store_image(response, image_link)
-
 class DownloadStatically():
+    def download_and_store(sm: Supermarket):
+        # verify if there are product image urls provided with the object.
+        # if so, proceed to download and store them.
+        try: 
+            assert sm.get_product_image_urls() is not None
+        except AssertionError:
+            print("There are no image urls.")
+        else:
+            with ThreadPoolExecutor() as exec:
+                exec.map(download_image, sm.get_product_image_urls())                       
 
-    def download_and_store(sm: Supermarket):                    
-        
-        with ThreadPoolExecutor() as exec:
-            exec.map(download_image, sm.get_product_image_urls())
-
-async def execute_browser():
+async def execute_browser(operation: str, sm: Supermarket):
     async with async_playwright() as pw:
             
         browser = await pw.chromium.launch(headless=False)
@@ -57,6 +57,18 @@ async def execute_browser():
         page = await context.new_page()
         response = await page.goto(sm.products_page_url(), timeout=120000)
         assert response.status != 404
-            
+
+        if operation == 'get_product_image_urls':
+            DownloadDynamically.get_product_image_urls(sm, page)
+        else:
+            DownloadDynamically.screenshot_product_images(sm, page)
+
+def download_image(image_link):
+    response =  requests.get(image_link).content
+    BinaryContentAsImage.store_image(response, image_link)
+
 if __name__ == "__main__":
-    asyncio.run(execute_browser())
+    supermarket = Spar()
+    supermarket.set_product_image_urls()
+    DownloadStatically.download_and_store(supermarket)
+    #asyncio.run(execute_browser())

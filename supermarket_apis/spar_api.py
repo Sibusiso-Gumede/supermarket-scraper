@@ -1,5 +1,6 @@
 """A child class of the Supermarket base class."""
 
+from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from .generic_api import Supermarket
 
@@ -40,9 +41,11 @@ class Spar(Supermarket):
 		"""Returns a list of product image urls."""
 		return self.product_image_urls
 	
-	def set_product_image_urls(self, urls) -> None:
-		"""Assigns the list of product image urls."""
-		self.product_image_urls = urls
+	def set_product_image_urls(self, page: BeautifulSoup) -> None:
+		"""Appends product image urls into the list."""
+		products = page.find('ul', {'class': 'slides', 'id': 'slideContainer'}).find_all('li')
+		for product in products:
+			self.product_image_urls.append(product.find('a', {'data-fancybox': 'promoGal'}).attrs['href'])
 		
 	def format_promo_description(self) -> str or None:
 		"""Returns a formatted promotion description of the product."""

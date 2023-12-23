@@ -17,11 +17,6 @@ def parse_response(resp_content: bytes) -> BeautifulSoup:
     """Parses the response into a navigatable tree structure."""
     return BeautifulSoup(resp_content, 'lxml')
 
-def download_product_image(img_absolute_url: str) -> None:
-    """Sends a request to the 'assets' application of the 
-    Woolworths website and stores the response."""
-    # TODO: add operations to download each product image.
-
 class WoolworthsStaticSpider():
 
     def capture_data(self, page: BeautifulSoup) -> None:
@@ -79,11 +74,3 @@ class WoolworthsStaticSpider():
         # Return 'NoneType'.
         else:
             return str(type(arg))
-        
-class SparStaticSpider():
-
-    def capture_data(self, page: BeautifulSoup) -> None:
-        products = page.find('ul', {'class': 'slides', 'id': 'slideContainer'}).find_all('li')
-        for product in products:
-            product_image_url = product.find('a', {'data-fancybox': 'promoGal'}).attrs['href']
-            print(product_image_url)
