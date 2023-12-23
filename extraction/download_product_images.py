@@ -3,6 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 from transformation import BinaryContentAsImage
 from supermarket_apis import Supermarket
 from supermarket_apis import Spar
+from transformation import 
 import asyncio
 import requests
 

@@ -7,7 +7,7 @@ from os import path, listdir
 class PageAsBinaryFile():
     """A class for storing and retrieving HTML pages in binary format."""
         
-    def store_content(self, content: bytes, supermarket_name, product_title=None, page_type='products', page_number=0) -> bool:
+    def store_content(content: bytes, supermarket_name, product_title=None, page_type='products', page_number=0) -> bool:
         """Stores the contents of the page in bytes.
             Returns a true/false to confirm if the page
             is successfully stored."""
@@ -26,7 +26,7 @@ class PageAsBinaryFile():
                 file.write(write_bytes.getbuffer())
             return path.isfile(path_)
 
-    def retrieve_content(self, supermarket_name, product_title=None, page_type='products', page_number=0) -> bytes:
+    def retrieve_content(supermarket_name, product_title=None, page_type='products', page_number=0) -> bytes:
         """Retrieves the stored contents of a page."""
         try:
             assert page_number >= 0
@@ -36,11 +36,10 @@ class PageAsBinaryFile():
             payload = bytes()
             path_ = str()
             if page_type == 'products' and product_title == None:
-                path_ = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_templates/{supermarket_name}_templates/page_{page_number}.bin"        
+                path_ = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{supermarket_name}/Pages/page_{page_number}.bin"        
             elif page_type == 'product_display_page' and product_title != None:
-                path_ = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_templates/{supermarket_name}_templates/{product_title}_page.bin"
+                path_ = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{supermarket_name}/Pages/{product_title}_page.bin"
             with open(path_, "rb") as file:
-                # The size of the buffer.
                 buffer_size = 2**10*8
                 # Read 8kilobytes of data per cycle
                 # and append it to the payload.
@@ -52,7 +51,7 @@ class PageAsBinaryFile():
 
 class BinaryContentAsImage():
 
-    def store_image(self, img: bytes, name: str) -> None:
+    def store_image(img: bytes, image_name: str) -> None:
         '''Stores byte content in image format.'''
         
         try:
@@ -60,11 +59,11 @@ class BinaryContentAsImage():
         except UnidentifiedImageError or FileNotFoundError:
             print("Image not found or is invalid.")
         else:
-            with open(f'{files_dir}/{name}', "wb") as file:
+            with open(f'/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{image_name.split(".")[1]}/Product Images/{image_name}', "xb") as file:
                 image.save(file, "JPEG") 
                 print("Image successfully saved.")
 
-    def retrieve_image(self, files_dir: str):
+    def retrieve_image(files_dir: str):
         '''Retrieves an image file stored in binary format and
            returns it in Image format.'''
         

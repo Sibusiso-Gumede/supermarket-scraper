@@ -45,7 +45,7 @@ class Spar(Supermarket):
 		"""Appends product image urls into the list."""
 		products = page.find('ul', {'class': 'slides', 'id': 'slideContainer'}).find_all('li')
 		for product in products:
-			self.product_image_urls.append(product.find('a', {'data-fancybox': 'promoGal'}).attrs['href'])
+			self.product_image_urls.append(self.base_address+product.find('a', {'data-fancybox': 'promoGal'}).attrs['href'])
 		
 	def format_promo_description(self) -> str or None:
 		"""Returns a formatted promotion description of the product."""
