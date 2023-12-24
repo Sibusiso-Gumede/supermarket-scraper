@@ -28,7 +28,7 @@ class Supermarket(ABC):
         pass
 
     @abstractclassmethod
-    def set_product_image_urls(self):
+    def set_supermarket_attributes(self):
         pass
 
     @abstractclassmethod

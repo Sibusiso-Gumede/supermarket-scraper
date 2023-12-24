@@ -1,16 +1,19 @@
 from extraction import send_request
-from supermarket_apis import Spar
+from supermarket_apis import (Supermarket, Spar, Woolworths,
+                            PicknPay, Shoprite, Checkers)
 from transformation import PageAsBinaryFile
 
-def spar_page_template() -> None:
-    spar = Spar()
-    products_page = spar.products_page_url()
-    response = send_request(products_page)
+def supermarket_page_template(supermarket: Supermarket) -> None:
+    supermarket = Supermarket()
+    products_page = supermarket.products_page_url()
  
-    if PageAsBinaryFile.store_content(response, 'Spar'):
+    if PageAsBinaryFile.store_content(send_request(products_page), 
+                            supermarket.get_supermarket_name()):
         print("Page stored successfully.")
     else:
         print("Page not stored successfully.")
 
+
 if __name__ == '__main__':
-    spar_page_template()
+    woolies = Woolworths()
+    supermarket_page_template(woolies)

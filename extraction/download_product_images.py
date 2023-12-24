@@ -1,8 +1,8 @@
 #from playwright.async_api import async_playwright
 from concurrent.futures import ThreadPoolExecutor
+from extraction import parse_response
 from transformation import BinaryContentAsImage, PageAsBinaryFile
 from supermarket_apis import Supermarket, Spar
-from extraction import parse_response
 import requests
 #import asyncio
 
@@ -69,6 +69,6 @@ def download_image(image_link: str) -> None:
 
 if __name__ == "__main__":
     supermarket = Spar()
-    supermarket.set_product_image_urls(parse_response(PageAsBinaryFile.retrieve_content(supermarket.name)))
+    supermarket.set_product_details(parse_response(PageAsBinaryFile.retrieve_content(supermarket.name)))
     DownloadStatically.download_and_store(supermarket)
     #asyncio.run(execute_browser())

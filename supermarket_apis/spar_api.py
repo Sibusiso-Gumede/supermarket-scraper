@@ -41,8 +41,8 @@ class Spar(Supermarket):
 		"""Returns a list of product image urls."""
 		return self.product_image_urls
 	
-	def set_product_image_urls(self, page: BeautifulSoup) -> None:
-		"""Appends product image urls into the list."""
+	def set_supermarket_attributes(self, page: BeautifulSoup) -> None:
+		"""Initializes the supermarket object attributes."""
 		products = page.find('ul', {'class': 'slides', 'id': 'slideContainer'}).find_all('li')
 		for product in products:
 			self.product_image_urls.append(self.base_address+product.find('a', {'data-fancybox': 'promoGal'}).attrs['href'])

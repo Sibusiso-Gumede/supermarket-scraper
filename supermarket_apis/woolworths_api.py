@@ -18,15 +18,16 @@ class Woolworths(Supermarket):
             'product_promo': 'div[class^="font-graphic"] > a[href^="/cat"] > div',
             'product_img': 'div[class="product--image"] > img',
         }
-        self.page_increment = 60
-    
+        self.page_increment = 24
+        self.product_count_per_category = dict()
+
     def get_supermarket_name(self) -> str:
         """Returns the name of the supermarket object."""
         return self.name
     
-    def products_page_url(self, page_number=0) -> str:
+    def products_page_url(self) -> str:
         """Returns the absolute url of a webpage."""
-        return urljoin(self.base_address, f'/cat/Food/_/N-1z13sk5Zxtznwk?No={page_number}&Nrpp=60')
+        return urljoin(self.base_address, f'/cat/Food/_/N-1z13sk5Zxtznwk?No=24&Nrpp={total_items}')
     
     def get_page_increment(self) -> int:
         """Returns the page increment of the website."""
@@ -72,3 +73,9 @@ class Woolworths(Supermarket):
             return promotions
         else:
             return promo
+
+    def set_supermarket_attributes(self, page: BeautifulSoup) -> None:
+        """Initializes the supermarket object attributes."""
+        products = page.find('div', {'class': 'grid grid--flex grid--space-y layout--1x4'}).find_all('div', {'class': 'product-list__item'})
+        
+        for product in products:
