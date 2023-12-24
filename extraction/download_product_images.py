@@ -3,8 +3,8 @@ from concurrent.futures import ThreadPoolExecutor
 from transformation import BinaryContentAsImage, PageAsBinaryFile
 from supermarket_apis import Supermarket, Spar
 from extraction import parse_response
-#import asyncio
 import requests
+#import asyncio
 
 class DownloadDynamically():
 
@@ -47,7 +47,7 @@ class DownloadStatically():
             print("No image urls were provided.")
         else:
             with ThreadPoolExecutor() as exec:
-                exec.map(download_image, sm.get_product_image_urls())                       
+                print(exec.map(download_image, sm.get_product_image_urls()))                      
 
 async def execute_browser(operation: str, sm: Supermarket):
     async with async_playwright() as pw:
@@ -65,7 +65,7 @@ async def execute_browser(operation: str, sm: Supermarket):
 
 def download_image(image_link: str) -> None:
     response =  requests.get(image_link).content
-    BinaryContentAsImage.store_image(response, image_link)
+    return BinaryContentAsImage.store_image(response, image_link)
 
 if __name__ == "__main__":
     supermarket = Spar()

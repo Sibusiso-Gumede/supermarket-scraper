@@ -51,7 +51,7 @@ class PageAsBinaryFile():
 
 class BinaryContentAsImage():
 
-    def store_image(img: bytes, image_name: str) -> None:
+    def store_image(img: bytes, image_name: str) -> str:
         '''Stores byte content in image format.'''
         
         try:
@@ -63,7 +63,7 @@ class BinaryContentAsImage():
             # Therefore, we retrieve the name of the supermarket from the base address.
             with open(f'/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{image_name.split(".")[1]}/Product Images/{image_name}', "xb") as file:
                 image.save(file, "JPEG") 
-                print("Image successfully saved.")
+                return(f"{image_name} successfully saved.")
 
     def retrieve_image(files_dir: str):
         '''Retrieves an image file stored in binary format and
