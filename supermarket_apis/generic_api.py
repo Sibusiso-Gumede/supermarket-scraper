@@ -1,4 +1,5 @@
 from abc import ABC, abstractclassmethod
+import pandas
 
 class Supermarket(ABC):
     """The base class for all supermarket classes."""
@@ -18,17 +19,13 @@ class Supermarket(ABC):
     @abstractclassmethod
     def get_page_increment(self):
         pass
-
-    @abstractclassmethod
-    def get_page_selectors(self):
-        pass
     
     @abstractclassmethod
     def get_product_image_urls(self):
         pass
 
     @abstractclassmethod
-    def set_supermarket_attributes(self):
+    def get_supermarket_attributes(self):
         pass
 
     @abstractclassmethod
