@@ -1,5 +1,8 @@
 from abc import ABC, abstractclassmethod
-import pandas
+from requests import get
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
+import json
 
 class Supermarket(ABC):
     """The base class for all supermarket classes."""
@@ -25,9 +28,23 @@ class Supermarket(ABC):
         pass
 
     @abstractclassmethod
-    def get_supermarket_attributes(self):
+    def set_supermarket_attributes(self):
         pass
 
     @abstractclassmethod
     def format_promo_description(self):
         pass
+
+def send_request(base_address, relative_url = None) -> bytes:
+    """Sends a request and returns the response in bytes."""
+    if relative_url != None:
+        absolute_url = urljoin(base_address, relative_url)
+    else:
+        absolute_url = base_address
+    response = get(absolute_url)
+    response.raise_for_status()
+    return response.content
+        
+def parse_response(resp_content: bytes) -> BeautifulSoup:
+    """Parses the response into a navigatable tree structure."""
+    return BeautifulSoup(resp_content, 'lxml')

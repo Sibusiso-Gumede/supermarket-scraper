@@ -1,14 +1,13 @@
 """A child class of the Supermarket base class."""
 
-from urllib.parse import urljoin
-from generic_api import Supermarket
+from .generic_api import BeautifulSoup, Supermarket, urljoin
 
 class Woolworths(Supermarket):
     """The Woolworths supermarket class implementation."""
     
     def __init__(self):
         self.base_address = 'https://www.woolworths.co.za'
-        self.name = 'Woolworths'
+        self.name = 'woolworths'
         self.page_increment = 24
         self.categories = {
                             'Meat-Poultry-Fish': {
@@ -139,7 +138,7 @@ class Woolworths(Supermarket):
         else:
             return promo
 
-    def get_supermarket_attributes(self, page: BeautifulSoup) -> None:
+    def set_supermarket_attributes(self, page: BeautifulSoup) -> None:
         """Initializes the supermarket object attributes."""
         products = page.find('div', {'class': 'grid grid--flex grid--space-y layout--1x4'}).find_all('div', {'class': 'product-list__item'})
 

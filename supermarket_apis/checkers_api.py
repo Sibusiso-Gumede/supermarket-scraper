@@ -1,14 +1,13 @@
 """A child class of the Supermarket base class."""
 
-from urllib.parse import urljoin
-from generic_api import Supermarket
+from .generic_api import Supermarket, urljoin
 
 class Checkers(Supermarket):
 	"""The Checkers supermarket class implementation."""
 
 	def __init__(self):
 		self.base_address = 'https://www.checkers.co.za'
-		self.name = 'Checkers'
+		self.name = 'checkers'
 		self.page_selectors = {
 			'product_list': '',
 			'product_id': '',

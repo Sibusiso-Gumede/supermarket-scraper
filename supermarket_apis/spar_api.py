@@ -1,23 +1,13 @@
 """A child class of the Supermarket base class."""
 
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin
-from .generic_api import Supermarket
+from .generic_api import Supermarket, BeautifulSoup, urljoin
 
 class Spar(Supermarket):
 	"""The Spar supermarket class implementation."""
 
 	def __init__(self):
 		self.base_address = 'https://www.spar.co.za'
-		self.name = 'Spar'
-		self.page_selectors = {
-			'product_list': 'ul[class="slides"] > li[style^="width"]',
-			'product_id': '',
-			'product_title': '',
-			'product_price': '',
-			'product_promo': '',
-			'product_img': 'a[class="Click to Zoom"]',
-		}		
+		self.name = 'spar'	
 		self.page_increment = 1
 		self.product_image_urls = []
 
@@ -33,20 +23,19 @@ class Spar(Supermarket):
 		"""Returns the page increment of the website."""
 		return self.page_increment
 	
-	def get_page_selectors(self) -> dict[str]:
-		"""Returns a dictionary of CSS selectors."""
-		return self.page_selectors
-	
 	def get_product_image_urls(self) -> list:
 		"""Returns a list of product image urls."""
 		return self.product_image_urls
 	
-	def set_supermarket_attributes(self, page: BeautifulSoup) -> None:
+	def set_supermarket_attributes(self, page: BeautifulSoup):
 		"""Initializes the supermarket object attributes."""
 		products = page.find('ul', {'class': 'slides', 'id': 'slideContainer'}).find_all('li')
 		for product in products:
-			self.product_image_urls.append(self.base_address+product.find('a', {'data-fancybox': 'promoGal'}).attrs['href'])
-		
+			#self.product_image_urls.append(self.base_address+product.find('a', {'data-fancybox': 'promoGal'}).attrs['href'])
+			image_url = product.find('div', {'class': 'item-image'})
+			if image_url != None:
+				self.product_image_urls.append(f"{self.base_address+image_url.find('img').attrs['src']}")
+
 	def format_promo_description(self) -> str or None:
-		"""Returns a formatted promotion description of the product."""
+		"""Returns a formatted promotion description of a product."""
 		return None

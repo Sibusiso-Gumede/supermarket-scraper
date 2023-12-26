@@ -62,7 +62,7 @@ class BinaryContentAsImage():
             # The image name consists of a url. 
             # Therefore, we retrieve the name of the supermarket from the base address.
             with open(f'/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{image_name.split(".")[1]}/Product Images/{image_name}', "xb") as file:
-                image.save(file, "JPEG") 
+                image.save(file, "PNG") 
                 return(f"{image_name} successfully saved.")
 
     def retrieve_image(files_dir: str):
