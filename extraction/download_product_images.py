@@ -1,6 +1,6 @@
 #from playwright.async_api import async_playwright
 from concurrent.futures import ThreadPoolExecutor
-from transformation import BinaryContentAsImage, PageAsBinaryFile
+from transformation import BinaryContentAsImage, ContentAsBinaryFile
 from supermarket_apis import Supermarket, Spar, parse_response
 import requests
 #import asyncio
@@ -40,16 +40,15 @@ class DownloadStatically():
     def download_and_store(sm: Supermarket):
         # verify if there are product image urls provided with the object.
         # if so, proceed to download and store them.
-        #total_urls = sm.get_product_image_urls().__sizeof__()
-        for url in sm.get_product_image_urls():
-            download_image(url)
-        #try: 
-        #    assert total_urls != 0
-        #except AssertionError:
-        #    print("No image urls were provided.")
-        #else:
-        #    with ThreadPoolExecutor() as exec:
-        #        exec.map(download_image, sm.get_product_image_urls())                      
+        total_urls = sm.get_product_image_urls().__sizeof__()
+        try: 
+            assert total_urls != 0
+        except AssertionError:
+            print("No product image urls were provided.")
+        else:
+            with ThreadPoolExecutor() as exec:
+                for result in exec.map(download_image, sm.get_product_image_urls()):                     
+                    print(result)
 
 async def execute_browser(operation: str, sm: Supermarket):
     async with async_playwright() as pw:
@@ -69,12 +68,15 @@ def download_image(image_link: str) -> str:
     
     response =  requests.get(image_link)
     if response.status_code == 200:
-        print(BinaryContentAsImage.store_image(response.content, image_link))
+        if BinaryContentAsImage.store_image(response.content, image_link):
+            return "Image successfully stored."
+        else:
+            return "Image not saved successfully."
     else:
-        print("HTTP Error.")
+        return "HTTP Error."
     
 if __name__ == "__main__":
     supermarket = Spar()
-    supermarket.set_supermarket_attributes(parse_response(PageAsBinaryFile.retrieve_content(supermarket.name)))
+    supermarket.set_supermarket_attributes(parse_response(ContentAsBinaryFile.retrieve_content(supermarket.name)))
     DownloadStatically.download_and_store(supermarket)
     #asyncio.run(execute_browser())

@@ -9,7 +9,7 @@ class Spar(Supermarket):
 		self.base_address = 'https://www.spar.co.za'
 		self.name = 'spar'	
 		self.page_increment = 1
-		self.product_image_urls = []
+		self.product_image_urls = list[str]
 
 	def get_supermarket_name(self) -> str:
 		"""Returns the name of the supermarket object."""
@@ -31,10 +31,10 @@ class Spar(Supermarket):
 		"""Initializes the supermarket object attributes."""
 		products = page.find('ul', {'class': 'slides', 'id': 'slideContainer'}).find_all('li')
 		for product in products:
-			#self.product_image_urls.append(self.base_address+product.find('a', {'data-fancybox': 'promoGal'}).attrs['href'])
 			image_url = product.find('div', {'class': 'item-image'})
 			if image_url != None:
-				self.product_image_urls.append(f"{self.base_address+image_url.find('img').attrs['src']}")
+				url = str(self.base_address+image_url.find('img').attrs['src']).replace('=280', '=1120')
+				self.product_image_urls.append(url)
 
 	def format_promo_description(self) -> str or None:
 		"""Returns a formatted promotion description of a product."""
