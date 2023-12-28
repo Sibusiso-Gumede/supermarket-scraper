@@ -3,4 +3,4 @@ from .checkers_api import Checkers
 from .shoprite_api import Shoprite
 from .picknpay_api import PicknPay
 from .woolworths_api import Woolworths
-from .generic_api import Supermarket, parse_response
+from .generic_api import Supermarket, parse_response, send_request

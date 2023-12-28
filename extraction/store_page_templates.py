@@ -1,13 +1,12 @@
-from extraction import send_request
 from supermarket_apis import (Supermarket, Spar, Woolworths,
-                            PicknPay, Shoprite, Checkers)
-from transformation import ContentAsBinaryFile
+                            PicknPay, Shoprite, Checkers, send_request)
+from transformation import store_webpage
 
 def supermarket_page_template(supermarket: Supermarket) -> None:
     supermarket = Supermarket()
     products_page = supermarket.products_page_url()
  
-    if ContentAsBinaryFile.store_content(send_request(products_page), 
+    if store_webpage(send_request(products_page), 
                             supermarket.products_page_url(), "web page"):
         print("Page stored successfully.")
     else:

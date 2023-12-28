@@ -2,28 +2,21 @@
 
 from io import BytesIO
 from PIL import Image, UnidentifiedImageError
-from os import path, listdir
+from os import path, listdir, mkdir
 from concurrent.futures import ThreadPoolExecutor
    
-def store_webpage(content: bytes, content_name: str, content_type: str, page_number=0) -> bool:
+def store_webpage(content: bytes, content_name: str, page_number=0) -> bool:
     """Stores the content of the response in bytes.
         Returns a true/false to confirm if the content
         is successfully stored."""
-    try:
-        assert page_number >= 0
-    except AssertionError:
-        print("Invalid page number")
-    else:
-        if content_type == "web page":
-            path_ =  f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{content_name.split('.')[1]}/Pages/page_{page_number}.bin"
-        elif content_type == "product image":
-            path_ = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{content_name.split('.')[1]}/Product Images/{content_name.split('/')[-1]}.bin"
-        else:
-            raise ValueError("Unidentified argument value of content_type.")
-        write_bytes = BytesIO(content)
-        with open(path_, "xb") as file:
-            file.write(write_bytes.getbuffer())
-        return path.isfile(path_)
+    
+    path_ =  f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{content_name.split('.')[1]}/Pages"
+    if path.isdir(path_) is not True:
+        mkdir(path_)
+    write_bytes = BytesIO(content)
+    with open(path_+f"/page_{page_number}.bin", "xb") as file:
+        file.write(write_bytes.getbuffer())
+    return path.isfile(path_)
 
 def retrieve_webpage(supermarket_name, product_title=None, page_type='products', page_number=0) -> bytes:
     """Retrieves the stored contents of a page."""
