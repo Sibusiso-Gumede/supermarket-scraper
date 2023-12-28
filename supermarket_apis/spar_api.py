@@ -39,3 +39,6 @@ class Spar(Supermarket):
 	def format_promo_description(self) -> str or None:
 		"""Returns a formatted promotion description of a product."""
 		return None
+
+	def get_images_path(self):
+		return f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{self.name}/Product Images"

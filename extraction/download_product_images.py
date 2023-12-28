@@ -1,6 +1,6 @@
 #from playwright.async_api import async_playwright
 from concurrent.futures import ThreadPoolExecutor
-from transformation import BinaryContentAsImage, ContentAsBinaryFile
+from transformation import store_image, retrieve_webpage, map_function
 from supermarket_apis import Supermarket, Spar, parse_response
 import requests
 #import asyncio
@@ -37,6 +37,7 @@ class DownloadDynamically():
             count += 1             
                        
 class DownloadStatically():
+
     def download_and_store(sm: Supermarket):
         # verify if there are product image urls provided with the object.
         # if so, proceed to download and store them.
@@ -46,9 +47,9 @@ class DownloadStatically():
         except AssertionError:
             print("No product image urls were provided.")
         else:
-            with ThreadPoolExecutor() as exec:
-                for result in exec.map(download_image, sm.get_product_image_urls()):                     
-                    print(result)
+            results = map_function(download_image, sm.get_product_image_urls())
+            for result in results:
+                print(result)
 
 async def execute_browser(operation: str, sm: Supermarket):
     async with async_playwright() as pw:
@@ -68,7 +69,7 @@ def download_image(image_link: str) -> str:
     
     response =  requests.get(image_link)
     if response.status_code == 200:
-        if BinaryContentAsImage.store_image(response.content, image_link):
+        if store_image(response.content, image_link):
             return "Image successfully stored."
         else:
             return "Image not saved successfully."
@@ -77,6 +78,6 @@ def download_image(image_link: str) -> str:
     
 if __name__ == "__main__":
     supermarket = Spar()
-    supermarket.set_supermarket_attributes(parse_response(ContentAsBinaryFile.retrieve_content(supermarket.name)))
+    supermarket.set_supermarket_attributes(parse_response(retrieve_webpage(supermarket.name)))
     DownloadStatically.download_and_store(supermarket)
     #asyncio.run(execute_browser())

@@ -35,6 +35,10 @@ class Supermarket(ABC):
     def format_promo_description(self):
         pass
 
+    @abstractclassmethod
+    def get_images_path(self):
+        pass
+
 def send_request(base_address, relative_url = None) -> bytes:
     """Sends a request and returns the response in bytes."""
     if relative_url != None:

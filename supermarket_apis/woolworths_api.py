@@ -93,7 +93,7 @@ class Woolworths(Supermarket):
         """Returns the name of the supermarket object."""
         return self.name
     
-    def products_page_url(self) -> str:
+    def products_page_url(self, total_items) -> str:
         """Returns the absolute url of a webpage."""
         return urljoin(self.base_address, f'/cat/Food/_/N-1z13sk5Zxtznwk?No=24&Nrpp={total_items}')
     
