@@ -1,15 +1,17 @@
 """A child class of the Supermarket base class."""
 
-from .generic_api import BeautifulSoup, Supermarket, urljoin
+from .generic_api import BeautifulSoup, Supermarket, send_request, parse_response
+from transformation import store_webpage
 
 class Woolworths(Supermarket):
     """The Woolworths supermarket class implementation."""
     
     def __init__(self):
-        self.base_address = 'https://www.woolworths.co.za'
+        self.products_page = 'https://www.woolworths.co.za/cat/Food/'
         self.name = 'woolworths'
         self.page_increment = 24
-        self.categories = {
+        self.current_category_page = str()
+        self.product_categories = {
                             'Meat-Poultry-Fish': {
                                 'ID': 'N-d87rb7',
                                 'Products': 0
@@ -87,15 +89,26 @@ class Woolworths(Supermarket):
                                 'Products': 0
                             },    
         }
-        self.product_count_per_category = dict()
 
     def get_supermarket_name(self) -> str:
         """Returns the name of the supermarket object."""
         return self.name
     
-    def get_products_page_url(self, total_items) -> str:
-        """Returns the absolute url of a webpage."""
-        return urljoin(self.base_address, f'/cat/Food/_/N-1z13sk5Zxtznwk?No=24&Nrpp={total_items}')
+    def store_page_template(self) -> None:
+        items = self.__find_category_total_items()
+        complete_url = f"{self.current_category_page}/?No=120&Nrpp={items}"
+        if store_webpage(send_request(complete_url), 
+                                self.current_category_page.split('/')[4]):
+            print("Page stored successfully.")
+        #else:
+        #    print("Page not stored successfully.")
+    
+    def __find_category_total_items(self) -> str:
+        category = list(self.product_categories.keys())[0]
+        category_id = list(self.product_categories.values())[0]['ID']
+        self.current_category_page = f"{self.products_page+category}/_/{category_id}"
+        page = parse_response(send_request(self.current_category_page))
+        return page.find('div', {'class': 'listOptionsFoundItemsCount'}).text.split(' ')[0]
     
     def get_page_increment(self) -> int:
         """Returns the page increment of the website."""
@@ -140,7 +153,10 @@ class Woolworths(Supermarket):
 
     def set_supermarket_attributes(self, page: BeautifulSoup) -> None:
         """Initializes the supermarket object attributes."""
+
+        
         products = page.find('div', {'class': 'grid grid--flex grid--space-y layout--1x4'}).find_all('div', {'class': 'product-list__item'})
+
 
         for product in products:
             product_title = product.find('a', {'class': 'range--title'}).text
@@ -151,4 +167,15 @@ class Woolworths(Supermarket):
                 print(f"{product_title}\n{product_price}\n{product_promotion}\n{product_image_url}\n\n")
             else:
                 print(f"{product_title}\n{product_price}\n{product_image_url}\n\n")
-            
+
+    def get_images_path(self):
+        pass
+
+    def get_pages_path(self):
+        pass           
+
+    def get_product_image_urls(self):
+        pass
+
+    def get_products_page_url(self):
+        return self.products_page

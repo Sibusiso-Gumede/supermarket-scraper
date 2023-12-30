@@ -1,5 +1,4 @@
 #from playwright.async_api import async_playwright
-from concurrent.futures import ThreadPoolExecutor
 from transformation import store_image, retrieve_webpage, map_function
 from supermarket_apis import Supermarket, Spar, parse_response
 import requests
@@ -7,18 +6,18 @@ import requests
 
 class DownloadDynamically():
 
-    async def get_product_image_urls(sm: Supermarket, page):
+    async def get_product_image_urls(supermarket: Supermarket, page):
 
             image_urls = []
-            prod_list_selector = sm.get_page_selectors()['product_list']       
-            image_selector = sm.get_page_selectors()['product_img']
+            prod_list_selector = supermarket.get_page_selectors()['product_list']       
+            image_selector = supermarket.get_page_selectors()['product_img']
             product_list = await page.query_selector_all(prod_list_selector)
 
             for product in product_list:
                 image_element = await product.query_selector(image_selector)
                 if image_element is not None:
-                    image_urls.append(f"www.{sm.get_supermarket_name()}.co.za{await image_element.get_attribute('src')})")
-            sm.set_product_image_urls(image_urls)
+                    image_urls.append(f"www.{supermarket.get_supermarket_name()}.co.za{await image_element.get_attribute('src')})")
+            supermarket.set_product_image_urls(image_urls)
 
     async def screenshot_product_images(sm: Supermarket, page) -> None:
 

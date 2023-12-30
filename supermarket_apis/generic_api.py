@@ -32,6 +32,10 @@ class Supermarket(ABC):
         pass
 
     @abstractclassmethod
+    def store_page_template(self):
+        pass
+
+    @abstractclassmethod
     def format_promo_description(self):
         pass
 
