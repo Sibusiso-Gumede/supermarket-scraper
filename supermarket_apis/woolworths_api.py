@@ -1,7 +1,7 @@
 """A child class of the Supermarket base class."""
 
 from .generic_api import BeautifulSoup, Supermarket, send_request, parse_response
-from transformation import store_webpage
+from transformation import store_webpage, retrieve_webpage
 
 class Woolworths(Supermarket):
     """The Woolworths supermarket class implementation."""
@@ -96,19 +96,21 @@ class Woolworths(Supermarket):
     
     def store_page_template(self) -> None:
         items = self.__find_category_total_items()
-        complete_url = f"{self.current_category_page}/?No=120&Nrpp={items}"
-        if store_webpage(send_request(complete_url), 
-                                self.current_category_page.split('/')[4]):
-            print("Page stored successfully.")
+        print(items)
+        #assert items is not None
+        #complete_url = f"{self.current_category_page}/?No=120&Nrpp={items}"
+        #if store_webpage(send_request(complete_url), 
+        #                        self.current_category_page):
+        #    print("Page stored successfully.")
         #else:
         #    print("Page not stored successfully.")
     
-    def __find_category_total_items(self) -> str:
+    def __find_category_total_items(self):
         category = list(self.product_categories.keys())[0]
         category_id = list(self.product_categories.values())[0]['ID']
         self.current_category_page = f"{self.products_page+category}/_/{category_id}"
-        page = parse_response(send_request(self.current_category_page))
-        return page.find('div', {'class': 'listOptionsFoundItemsCount'}).text.split(' ')[0]
+        page = parse_response(retrieve_webpage(self.current_category_page))
+        return page.find('div', {'class': 'banner-wrapper'})
     
     def get_page_increment(self) -> int:
         """Returns the page increment of the website."""

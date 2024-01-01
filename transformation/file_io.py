@@ -5,7 +5,7 @@ from PIL import Image, UnidentifiedImageError
 from os import path, listdir, mkdir
 from concurrent.futures import ThreadPoolExecutor
    
-def store_webpage(content: bytes, content_name: str, page_number=0) -> bool:
+def store_webpage(content: bytes, content_name: str) -> bool:
     """Stores the content of the response in bytes.
         Returns a true/false to confirm if the content
         is successfully stored."""
@@ -14,32 +14,27 @@ def store_webpage(content: bytes, content_name: str, page_number=0) -> bool:
     if path.isdir(path_) is not True:
         mkdir(path_)
     write_bytes = BytesIO(content)
-    with open(path_+f"/page_{page_number}.bin", "xb") as file:
+    with open(path_+f"/{content_name.split('/')[5]}.bin", "xb") as file:
         file.write(write_bytes.getbuffer())
     return path.isfile(path_)
 
-def retrieve_webpage(supermarket_name, product_title=None, page_type='products', page_number=0) -> bytes:
+def retrieve_webpage(content_name) -> bytes:
     """Retrieves the stored contents of a page."""
-    try:
-        assert page_number >= 0
-    except AssertionError:
-        print("Invalid argument value.")
-    else:
-        payload = bytes()
-        path_ = str()
-        if page_type == 'products' and product_title == None:
-            path_ = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{supermarket_name}/Pages/page_{page_number}.bin"        
-        elif page_type == 'product_display_page' and product_title != None:
-            path_ = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{supermarket_name}/Pages/{product_title}_page.bin"
-        with open(path_, "rb") as file:
-            buffer_size = 2**10*8
-            # Read 8kilobytes of data per cycle
-            # and append it to the payload.
+    
+    payload = bytes()
+    #path_ = str()
+    path_ = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{content_name.split('.')[1]}/Pages"        
+    #elif page_type == 'product_display_page' and product_title != None:
+    #    path_ = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{supermarket_name}/Pages/{product_title}_page.bin"
+    with open(path_+f"/{content_name.split('/')[5]}.bin", "rb") as file:
+        buffer_size = 2**10*8
+        # Read 8kilobytes of data per cycle
+        # and append it to the payload.
+        buffer = file.read(buffer_size)
+        while buffer:
+            payload += buffer
             buffer = file.read(buffer_size)
-            while buffer:
-                payload += buffer
-                buffer = file.read(buffer_size)
-        return payload
+    return payload
 
 def store_image(img: bytes, image_name: str) -> bool:
     '''Stores byte content in image format(png, jpeg, etc).'''
