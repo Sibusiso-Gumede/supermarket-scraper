@@ -16,11 +16,7 @@ class Supermarket(ABC):
         pass
 
     @abstractclassmethod
-    def get_products_page_url(self):
-        pass
-
-    @abstractclassmethod
-    def get_page_increment(self):
+    def get_current_products_page_url(self):
         pass
     
     @abstractclassmethod
