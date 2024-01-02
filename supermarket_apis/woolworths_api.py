@@ -7,9 +7,11 @@ class Woolworths(Supermarket):
     """The Woolworths supermarket class implementation."""
     
     def __init__(self):
-        self._products_page = 'https://www.woolworths.co.za/cat/Food/'
-        self._name = 'woolworths'
-        self._product_categories = {
+        self.__products_page = 'https://www.woolworths.co.za/cat/Food/'
+        self.__name = 'woolworths'
+        self.__products_pages_path = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{self.__name}/Products_Pages"
+        self.__product_view_pages_path = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{self.__name}/Product_View_Pages"
+        self.__product_categories = {
                             'Meat-Poultry-Fish': {
                                 'ID': 'N-d87rb7',
                                 'Products': 0
@@ -87,23 +89,35 @@ class Woolworths(Supermarket):
                                 'Products': 0
                             },    
         }
-        category = list(self._product_categories.keys())[0]
-        category_id = list(self._product_categories.values())[0]['ID']
-        self._current_category_page = f"{self._products_page+category}/_/{category_id}"
+        category = list(self.__product_categories.keys())[0]
+        category_id = list(self.__product_categories.values())[0]['ID']
+        self.__current_category_page = f"{self.__products_page+category}/_/{category_id}"
+        self.__current_product_view_page_url = str()
 
     def get_supermarket_name(self) -> str:
         """Returns the name of the supermarket object."""
-        return self._name
+        return self.__name
     
     def store_page_template(self) -> None:
         items = 2000
-        complete_url = f"{self._current_category_page}/?No=120&Nrpp={items}"
+        complete_url = f"{self.__current_category_page}/?No=120&Nrpp={items}"
         if store_webpage(send_request(complete_url), 
-                                self._current_category_page):
+                        self.__current_category_page.split('/')[5],
+                        self.__products_pages_path):
             print("Page stored successfully.")
         else:
             print("Page not stored successfully.")
     
+    def store_product_view_page_template(self) -> None:
+        self.__current_product_view_page_url = "https://woolworths.co.za/prod/Food/Frozen-Food/Fish-Seafood/Frozen-Mussels-with-Garlic-Herb-Butter-500-g/_/A-6009214621319?isFromPLP=true"
+        
+        if store_webpage(send_request(self.__current_product_view_page_url),
+                      self.__current_product_view_page_url.split('/')[7],
+                      self.__product_view_pages_path):
+            print("Page successfully stored.")
+        else:
+            print("Page not successfully stored.")
+
     def format_promo_description(self, promo: str):
         """Sorts the product promotion description into a list.
         
@@ -144,29 +158,34 @@ class Woolworths(Supermarket):
     def set_supermarket_attributes(self, page: BeautifulSoup) -> None:
         """Initializes the supermarket object attributes."""
 
-        print("Setting up supermarket attributes...")
-        products = page.find('div', {'class': 'grid grid--flex grid--space-y layout--1x4'}).find_all('div', {'class': 'product-list__item'})
-
+        print("Setting up supermarket attributes...\n")
+        products = page.find('div', {'class': 'grid grid--flex grid--space-y layout--1x4'}
+                            ).find_all(
+                            'div', {'class': 'product-list__item'}
+                            )
+        
         for product in products:
-            product_title = product.find('a', {'class': 'range--title'}).text
-            product_price = product.find('strong', {'class': 'price'}).text
-            product_promotion = product.find('div', {'class': 'product__price-field'}).find('a').text
-            product_image_url = product.find('div', {'class': 'product--image'}).find('img').attrs['src']
-            if product_promotion:
-                print(f"{product_title}\n{product_price}\n{product_promotion}\n{product_image_url}\n\n")
-            else:
-                print(f"{product_title}\n{product_price}\n{product_image_url}\n\n")
-
-            print("Operation complete.")    
+            self.__current_product_view_page_url = product.find('a', {'class': 'range--title'})            
+            if self.__current_product_view_page_url:
+                self.__current_product_view_page_url = f"https://www.woolworths.co.za/{self.__current_product_view_page_url.attrs['href']}"
+                # TODO: write operations that retrieves data from each product's view page.
+                product_price = product.find('strong', {'class': 'price'}).text
+                product_promotion = product.find('div', {'class': 'product__price-field'}).find('a')
+                if product_promotion:
+                    product_promotion = product_promotion.text
+                    print(f"{product_title}\n{product_price}\n{product_promotion}\n\n")                
+                else:
+                    print(f"{product_title}\n{product_price}\n\n")
+        print("\nOperation complete.")    
 
     def get_images_path(self):
         pass
 
     def get_pages_path(self):
-        pass           
+        return self._products_page_path           
 
     def get_product_image_urls(self):
         pass
 
     def get_current_products_page_url(self):
-        return self._current_category_page
+        return self.__current_category_page_url

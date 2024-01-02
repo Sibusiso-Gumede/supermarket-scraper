@@ -5,28 +5,24 @@ from PIL import Image, UnidentifiedImageError
 from os import path, listdir, mkdir
 from concurrent.futures import ThreadPoolExecutor
    
-def store_webpage(content: bytes, content_name: str) -> bool:
+def store_webpage(content: bytes, content_name: str, path_: str) -> bool:
     """Stores the content of the response in bytes.
         Returns a true/false to confirm if the content
         is successfully stored."""
     
-    path_ =  f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{content_name.split('.')[1]}/Pages"
     if path.isdir(path_) is not True:
         mkdir(path_)
     write_bytes = BytesIO(content)
-    with open(path_+f"/{content_name.split('/')[5]}.bin", "xb") as file:
+    path_ += f"/{content_name}.bin"
+    with open(path_, "xb") as file:
         file.write(write_bytes.getbuffer())
     return path.isfile(path_)
 
-def retrieve_webpage(content_name) -> bytes:
+def retrieve_webpage(content_name: str, path_: str) -> bytes:
     """Retrieves the stored contents of a page."""
     
     payload = bytes()
-    #path_ = str()
-    path_ = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{content_name.split('.')[1]}/Pages"        
-    #elif page_type == 'product_display_page' and product_title != None:
-    #    path_ = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{supermarket_name}/Pages/{product_title}_page.bin"
-    with open(path_+f"/{content_name.split('/')[5]}.bin", "rb") as file:
+    with open(path_+f"/{content_name}.bin", "rb") as file:
         buffer_size = 2**10*8
         # Read 8kilobytes of data per cycle
         # and append it to the payload.
