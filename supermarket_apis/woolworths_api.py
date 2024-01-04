@@ -11,9 +11,6 @@ class Woolworths(Supermarket):
         self.__name = 'woolworths'
         self.__products_pages_path = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{self.__name}/Products_Pages"
         self.__product_view_pages_path = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{self.__name}/Product_View_Pages"
-        self.__current_category_name = list(self.__product_categories.keys())[0]
-        self.__current_category_id = list(self.__product_categories.values())[0]['ID']
-        self.__current_category_page_url = f"{self.__products_page+self.__current_category_name}/_/{self.__current_category_id}"
         self.__current_product_view_page_url = str()
         self.__current_product_name = str()
         self.__product_categories = {
@@ -94,6 +91,9 @@ class Woolworths(Supermarket):
                                 'Products': 0
                             },    
         }
+        self.__current_category_name = list(self.__product_categories.keys())[0]
+        self.__current_category_id = list(self.__product_categories.values())[0]['ID']
+        self.__current_category_page_url = f"{self.__products_page+self.__current_category_name}/_/{self.__current_category_id}"
         
     def get_supermarket_name(self) -> str:
         """Returns the name of the supermarket object."""
@@ -101,9 +101,9 @@ class Woolworths(Supermarket):
     
     def store_page_template(self) -> None:
         items = 2000
-        complete_url = f"{self.__current_category_page}/?No=120&Nrpp={items}"
+        complete_url = f"{self.__current_category_page_url}/?No=120&Nrpp={items}"
         if store_webpage(send_request(complete_url), 
-                        self.__current_category_page.split('/')[5],
+                        self.__current_category_page_url.split('/')[5],
                         self.__products_pages_path):
             print("Page stored successfully.")
         else:
@@ -119,7 +119,8 @@ class Woolworths(Supermarket):
         else:
             print("Page not successfully stored.")
 
-    def __format_promo_description(self, promo: str):
+
+    def format_promo_description(self, promo: str):
         """Sorts the product promotion description into a list.
         
            First string is the WRewards promotion and the second
@@ -155,14 +156,14 @@ class Woolworths(Supermarket):
         else:
             return promo
 
-    def set_supermarket_attributes(self, page: BeautifulSoup) -> None:
+    def scrape_items_from_category(self, page: BeautifulSoup) -> None:
         """Initializes the supermarket object attributes."""
 
         print("Setting up supermarket attributes...\n")
         products = page.find('div', {'class': 'grid grid--flex grid--space-y layout--1x4'}
                             ).find_all(
                             'div', {'class': 'product-list__item'})
-        
+        # TODO: replace product_title with current_product_name.
         for product in products:
             product_title = product.find('a', {'class': 'range--title'})
             if product_title:
@@ -172,24 +173,31 @@ class Woolworths(Supermarket):
                 
                 # Retrieve image url from each product's view page.
                 page = parse_response(retrieve_webpage(self.__current_product_name,
-                                self.__product_view_pages_path))
+                                                    self.__product_view_pages_path))
                 
                 product_price = product.find('strong', {'class': 'price'}).text
                 product_promotion = product.find('div', {'class': 'product__price-field'}).find('a')
                 product_image = page.find('meta', {'data-react-helmet': 'true',
-                                                    'property': 'og:title'}).attrs['content']
+                                'property': 'og:image'}).attrs['content']
                 if product_promotion:
                     product_promotion = product_promotion.text
                     print(f"{product_title}\n{product_price}\n{product_promotion}\n{product_image}\n\n")                
                 else:
                     print(f"{product_title}\n{product_price}\n{product_image}\n\n")
-        print("\nOperation complete.")    
+        print("\nOperation complete.")
 
-    def get_images_path(self):
+    def scrape_items_per_category(self):
+        category_names = list(self.__product_categories.keys())
+        category_details = list(self.__product_categories.values())
+        if category_names.__sizeof__() == category_details.__sizeof__():
+        # TODO: write a loop that invokes the scrape_items_from_category function.   
+            pass
+
+    def get_product_images_path(self):
         pass
 
-    def get_pages_path(self):
-        return self._products_page_path           
+    def get_product_view_pages_path(self):
+        return self.__product_view_pages_path           
 
     def get_product_image_urls(self):
         pass

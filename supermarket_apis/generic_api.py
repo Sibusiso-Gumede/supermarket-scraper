@@ -36,11 +36,11 @@ class Supermarket(ABC):
         pass
 
     @abstractclassmethod
-    def get_images_path(self):
+    def get_product_images_path(self):
         pass
 
     @abstractclassmethod
-    def get_pages_path(self):
+    def get_product_view_pages_path(self):
         pass
 
 def send_request(base_address, relative_url = None) -> bytes:
