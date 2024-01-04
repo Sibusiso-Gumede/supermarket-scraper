@@ -91,17 +91,17 @@ class Woolworths(Supermarket):
                                 'Products': 0
                             },    
         }
-        self.__current_category_name = list(self.__product_categories.keys())[0]
-        self.__current_category_id = list(self.__product_categories.values())[0]['ID']
-        self.__current_category_page_url = f"{self.__products_page+self.__current_category_name}/_/{self.__current_category_id}"
-        
+        self.__current_category_name = str()
+        self.__current_category_id = str()
+        self.__current_category_page_url = str()
+        self.__max_items_per_category = 2000
+
     def get_supermarket_name(self) -> str:
         """Returns the name of the supermarket object."""
         return self.__name
     
     def store_page_template(self) -> None:
-        items = 2000
-        complete_url = f"{self.__current_category_page_url}/?No=120&Nrpp={items}"
+        complete_url = f"{self.__current_category_page_url}/?No=120&Nrpp={self.__max_items_per_category}"
         if store_webpage(send_request(complete_url), 
                         self.__current_category_page_url.split('/')[5],
                         self.__products_pages_path):
@@ -119,7 +119,62 @@ class Woolworths(Supermarket):
         else:
             print("Page not successfully stored.")
 
+    def scrape_items_from_category(self, page: BeautifulSoup) -> None:
+        """Initializes the supermarket object attributes."""
 
+        print("Scraping items from specified category...\n")
+        products = page.find('div', {'class': 'grid grid--flex grid--space-y layout--1x4'}
+                            ).find_all(
+                            'div', {'class': 'product-list__item'})
+        
+        for product in products:
+            self.__current_product_name = product.find('a', {'class': 'range--title'})
+            if self.__current_product_name:
+                self.__current_product_name = self.__current_product_name.text
+                self.__current_product_view_page_url = product.find('a', {'class': 'range--title'}).attrs['href']            
+                self.__current_product_view_page_url = f"https://www.woolworths.co.za/{self.__current_product_view_page_url}"
+                
+                # Retrieve image url from each product's view page.
+                page = parse_response(retrieve_webpage(self.__current_product_name,
+                                                    self.__product_view_pages_path))
+                
+                product_price = product.find('strong', {'class': 'price'}).text
+                product_promotion = product.find('div', {'class': 'product__price-field'}).find('a')
+                product_image = page.find('meta', {'data-react-helmet': 'true',
+                                'property': 'og:image'}).attrs['content']
+                if product_promotion:
+                    product_promotion = product_promotion.text
+                    print(f"{self.__current_product_name}\n{product_price}\n{product_promotion}\n{product_image}\n\n")                
+                else:
+                    print(f"{self.__current_product_name}\n{product_price}\n{product_image}\n\n")
+        print("\nOperation complete.")
+
+    def scrape_items_per_category(self):
+        category_names = list(self.__product_categories.keys())
+        category_details = list(self.__product_categories.values())
+        if category_names.__sizeof__() == category_details.__sizeof__():
+        # TODO: write a loop that invokes the scrape_items_from_category function.   
+            for category_name, category_detail in category_names, category_details:
+                self.__current_category_name = category_name
+                self.__current_category_id = category_detail['ID']
+                self.__current_category_page_url = f"{self.__products_page+self.__current_category_name}/_/{self.__current_category_id}"
+                
+
+    def get_product_images_path(self):
+        pass
+
+    def get_product_view_pages_path(self):
+        return self.__product_view_pages_path           
+
+    def get_product_image_urls(self):
+        pass
+
+    def get_current_products_page_url(self):
+        return self.__current_category_page_url
+    
+    def get_current_category_name(self):
+        return self.__current_category_name
+    
     def format_promo_description(self, promo: str):
         """Sorts the product promotion description into a list.
         
@@ -134,7 +189,7 @@ class Woolworths(Supermarket):
             while True:
                 # Make use of ASCII values to distinguish the alphabets in an efficient manner.
                 current_letter = ord(promo[counter])
-                next_letter = ord(promo[counter+1])
+                next_letter = oitemsrd(promo[counter+1])
                 if (((96 < current_letter) and (current_letter < 123)) or 
                     ((64 < current_letter) and (current_letter < 91))) and (next_letter == 66):
                     # B = 66 'Buy' is on the right. Therefore, append WRewards first to the list.
@@ -155,55 +210,3 @@ class Woolworths(Supermarket):
             return promotions
         else:
             return promo
-
-    def scrape_items_from_category(self, page: BeautifulSoup) -> None:
-        """Initializes the supermarket object attributes."""
-
-        print("Setting up supermarket attributes...\n")
-        products = page.find('div', {'class': 'grid grid--flex grid--space-y layout--1x4'}
-                            ).find_all(
-                            'div', {'class': 'product-list__item'})
-        # TODO: replace product_title with current_product_name.
-        for product in products:
-            product_title = product.find('a', {'class': 'range--title'})
-            if product_title:
-                product_title = product_title.text
-                self.__current_product_view_page_url = product.find('a', {'class': 'range--title'}).attrs['href']            
-                self.__current_product_view_page_url = f"https://www.woolworths.co.za/{self.__current_product_view_page_url}"
-                
-                # Retrieve image url from each product's view page.
-                page = parse_response(retrieve_webpage(self.__current_product_name,
-                                                    self.__product_view_pages_path))
-                
-                product_price = product.find('strong', {'class': 'price'}).text
-                product_promotion = product.find('div', {'class': 'product__price-field'}).find('a')
-                product_image = page.find('meta', {'data-react-helmet': 'true',
-                                'property': 'og:image'}).attrs['content']
-                if product_promotion:
-                    product_promotion = product_promotion.text
-                    print(f"{product_title}\n{product_price}\n{product_promotion}\n{product_image}\n\n")                
-                else:
-                    print(f"{product_title}\n{product_price}\n{product_image}\n\n")
-        print("\nOperation complete.")
-
-    def scrape_items_per_category(self):
-        category_names = list(self.__product_categories.keys())
-        category_details = list(self.__product_categories.values())
-        if category_names.__sizeof__() == category_details.__sizeof__():
-        # TODO: write a loop that invokes the scrape_items_from_category function.   
-            pass
-
-    def get_product_images_path(self):
-        pass
-
-    def get_product_view_pages_path(self):
-        return self.__product_view_pages_path           
-
-    def get_product_image_urls(self):
-        pass
-
-    def get_current_products_page_url(self):
-        return self.__current_category_page_url
-    
-    def get_current_category_name(self):
-        return self.__current_category_name

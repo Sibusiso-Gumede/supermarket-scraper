@@ -12,10 +12,3 @@ if __name__ == '__main__':
     #)
     #woolies.store_page_template()
     #woolies.store_product_view_page_template()
-    woolies.set_supermarket_attributes(
-        parse_response(
-            retrieve_webpage('Frozen-Mussels-with-Garlic-Herb-Butter-500-g',
-                        woolies.get_product_view_pages_path()
-            )
-        )
-    )
