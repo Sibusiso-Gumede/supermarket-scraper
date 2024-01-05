@@ -43,13 +43,9 @@ class Supermarket(ABC):
     def get_product_view_pages_path(self):
         pass
 
-def send_request(base_address, relative_url = None) -> bytes:
+def send_request(url: str) -> bytes:
     """Sends a request and returns the response in bytes."""
-    if relative_url != None:
-        absolute_url = urljoin(base_address, relative_url)
-    else:
-        absolute_url = base_address
-    response = get(absolute_url)
+    response = get(url)
     response.raise_for_status()
     return response.content
         

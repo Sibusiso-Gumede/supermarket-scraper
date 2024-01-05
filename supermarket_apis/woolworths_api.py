@@ -157,8 +157,8 @@ class Woolworths(Supermarket):
             for category_name, category_detail in category_names, category_details:
                 self.__current_category_name = category_name
                 self.__current_category_id = category_detail['ID']
-                self.__current_category_page_url = f"{self.__products_page+self.__current_category_name}/_/{self.__current_category_id}"
-                
+                self.__current_category_page_url = f'{self.__products_page}{self.__current_category_name}/_/{self.__current_category_id}/?No=240&Nrpp={self.__max_items_per_category}'
+                self.scrape_items_from_category(parse_response(send_request(self.__current_category_page_url)))
 
     def get_product_images_path(self):
         pass
@@ -189,7 +189,7 @@ class Woolworths(Supermarket):
             while True:
                 # Make use of ASCII values to distinguish the alphabets in an efficient manner.
                 current_letter = ord(promo[counter])
-                next_letter = oitemsrd(promo[counter+1])
+                next_letter = ord(promo[counter+1])
                 if (((96 < current_letter) and (current_letter < 123)) or 
                     ((64 < current_letter) and (current_letter < 91))) and (next_letter == 66):
                     # B = 66 'Buy' is on the right. Therefore, append WRewards first to the list.
