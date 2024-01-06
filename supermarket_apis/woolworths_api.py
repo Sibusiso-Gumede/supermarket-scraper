@@ -2,6 +2,7 @@
 
 from .generic_api import BeautifulSoup, Supermarket, send_request, parse_response
 from transformation import store_webpage, retrieve_webpage
+from time import sleep
 
 class Woolworths(Supermarket):
     """The Woolworths supermarket class implementation."""
@@ -94,7 +95,7 @@ class Woolworths(Supermarket):
         self.__current_category_name = str()
         self.__current_category_id = str()
         self.__current_category_page_url = str()
-        self.__max_items_per_category = 2000
+        self.__max_items_per_category = 3
 
     def get_supermarket_name(self) -> str:
         """Returns the name of the supermarket object."""
@@ -126,6 +127,7 @@ class Woolworths(Supermarket):
         products = page.find('div', {'class': 'grid grid--flex grid--space-y layout--1x4'}
                             ).find_all(
                             'div', {'class': 'product-list__item'})
+        self.__product_categories[self.__current_category_name]['Products'] = list(products).__sizeof__()
         
         for product in products:
             self.__current_product_name = product.find('a', {'class': 'range--title'})
@@ -135,13 +137,12 @@ class Woolworths(Supermarket):
                 self.__current_product_view_page_url = f"https://www.woolworths.co.za/{self.__current_product_view_page_url}"
                 
                 # Retrieve image url from each product's view page.
-                page = parse_response(retrieve_webpage(self.__current_product_name,
-                                                    self.__product_view_pages_path))
-                
+                sleep(20)
+                page = parse_response(send_request(self.__current_product_view_page_url))
+                product_image = page.find('meta', {'data-react-helmet': 'true', 'property': 'og:image'}).attrs['content']                
                 product_price = product.find('strong', {'class': 'price'}).text
                 product_promotion = product.find('div', {'class': 'product__price-field'}).find('a')
-                product_image = page.find('meta', {'data-react-helmet': 'true',
-                                'property': 'og:image'}).attrs['content']
+
                 if product_promotion:
                     product_promotion = product_promotion.text
                     print(f"{self.__current_product_name}\n{product_price}\n{product_promotion}\n{product_image}\n\n")                
@@ -157,7 +158,7 @@ class Woolworths(Supermarket):
             for category_name, category_detail in category_names, category_details:
                 self.__current_category_name = category_name
                 self.__current_category_id = category_detail['ID']
-                self.__current_category_page_url = f'{self.__products_page}{self.__current_category_name}/_/{self.__current_category_id}/?No=240&Nrpp={self.__max_items_per_category}'
+                self.__current_category_page_url = f'{self.__products_page}{self.__current_category_name}/_/{self.__current_category_id}/?No=120&Nrpp={self.__max_items_per_category}'
                 self.scrape_items_from_category(parse_response(send_request(self.__current_category_page_url)))
 
     def get_product_images_path(self):

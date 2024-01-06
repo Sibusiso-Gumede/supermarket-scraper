@@ -12,8 +12,3 @@ if __name__ == '__main__':
     #)
     #woolies.store_page_template()
     #woolies.store_product_view_page_template()
-    letters = f'''hello
-    world. this is
-    probably my hundredth thousand
-    line of code.'''
-    print(letters)
