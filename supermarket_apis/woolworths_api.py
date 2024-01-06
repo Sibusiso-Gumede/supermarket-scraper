@@ -1,7 +1,7 @@
 """A child class of the Supermarket base class."""
 
 from .generic_api import BeautifulSoup, Supermarket, send_request, parse_response
-from transformation import store_webpage, retrieve_webpage
+from transformation import store_webpage, retrieve_webpage, map_function
 from time import sleep
 
 class Woolworths(Supermarket):
@@ -96,6 +96,7 @@ class Woolworths(Supermarket):
         self.__current_category_id = str()
         self.__current_category_page_url = str()
         self.__max_items_per_category = 3
+        self.__category_page_urls = list()
 
     def get_supermarket_name(self) -> str:
         """Returns the name of the supermarket object."""
@@ -120,10 +121,10 @@ class Woolworths(Supermarket):
         else:
             print("Page not successfully stored.")
 
-    def scrape_items_from_category(self, page: BeautifulSoup) -> None:
-        """Initializes the supermarket object attributes."""
+    def scrape_items_from_category(self, category_url: str) -> None:
 
-        print("Scraping items from specified category...\n")
+        page = parse_response(send_request(category_url))
+        
         products = page.find('div', {'class': 'grid grid--flex grid--space-y layout--1x4'}
                             ).find_all(
                             'div', {'class': 'product-list__item'})
@@ -153,13 +154,12 @@ class Woolworths(Supermarket):
     def scrape_items_per_category(self):
         category_names = list(self.__product_categories.keys())
         category_details = list(self.__product_categories.values())
-        if category_names.__sizeof__() == category_details.__sizeof__():
-        # TODO: write a loop that invokes the scrape_items_from_category function.   
-            for category_name, category_detail in category_names, category_details:
+        if category_names.__sizeof__() == category_details.__sizeof__(): 
+            for (category_name, category_detail) in zip(category_names, category_details):
                 self.__current_category_name = category_name
                 self.__current_category_id = category_detail['ID']
-                self.__current_category_page_url = f'{self.__products_page}{self.__current_category_name}/_/{self.__current_category_id}/?No=120&Nrpp={self.__max_items_per_category}'
-                self.scrape_items_from_category(parse_response(send_request(self.__current_category_page_url)))
+                self.__category_page_urls.append(f'{self.__products_page}{self.__current_category_name}/_/{self.__current_category_id}/?No=120&Nrpp={self.__max_items_per_category}')
+            map_function(self.scrape_items_from_category, self.__category_page_urls)
 
     def get_product_images_path(self):
         pass
