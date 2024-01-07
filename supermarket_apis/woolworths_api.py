@@ -1,7 +1,7 @@
 """A child class of the Supermarket base class."""
 
 from .generic_api import BeautifulSoup, Supermarket, send_request, parse_response
-from transformation import store_webpage, retrieve_webpage, map_function
+from transformation import store_webpage, retrieve_webpage, map_function, store_image
 from time import sleep
 
 class Woolworths(Supermarket):
@@ -10,8 +10,9 @@ class Woolworths(Supermarket):
     def __init__(self):
         self.__products_page = 'https://www.woolworths.co.za/cat/Food/'
         self.__name = 'woolworths'
-        self.__products_pages_path = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{self.__name}/Products_Pages"
-        self.__product_view_pages_path = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{self.__name}/Product_View_Pages"
+        self.__category_pages_path = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{self.__name}/category_pages"
+        self.__product_view_pages_path = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{self.__name}/product_view_pages"
+        self.__product_images_path = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{self.__name}/product_images"
         self.__current_product_view_page_url = str()
         self.__current_product_name = str()
         self.__product_categories = {
@@ -106,7 +107,7 @@ class Woolworths(Supermarket):
         complete_url = f"{self.__current_category_page_url}/?No=120&Nrpp={self.__max_items_per_category}"
         if store_webpage(send_request(complete_url), 
                         self.__current_category_page_url.split('/')[5],
-                        self.__products_pages_path):
+                        self.__category_pages_path):
             print("Page stored successfully.")
         else:
             print("Page not stored successfully.")
@@ -121,45 +122,51 @@ class Woolworths(Supermarket):
         else:
             print("Page not successfully stored.")
 
-    def scrape_items_from_category(self, category_url: str) -> None:
-
+    def __scrape_items_from_category(self, category_url: str) -> None:
         page = parse_response(send_request(category_url))
-        
+        category_products_view_page_urls = list()        
         products = page.find('div', {'class': 'grid grid--flex grid--space-y layout--1x4'}
                             ).find_all(
                             'div', {'class': 'product-list__item'})
         self.__product_categories[self.__current_category_name]['Products'] = list(products).__sizeof__()
-        
         for product in products:
             self.__current_product_name = product.find('a', {'class': 'range--title'})
             if self.__current_product_name:
                 self.__current_product_name = self.__current_product_name.text
-                self.__current_product_view_page_url = product.find('a', {'class': 'range--title'}).attrs['href']            
-                self.__current_product_view_page_url = f"https://www.woolworths.co.za/{self.__current_product_view_page_url}"
-                
-                # Retrieve image url from each product's view page.
-                sleep(20)
-                page = parse_response(send_request(self.__current_product_view_page_url))
-                product_image = page.find('meta', {'data-react-helmet': 'true', 'property': 'og:image'}).attrs['content']                
+                self.__current_product_view_page_url = product.find('a', {'class': 'range--title'}).attrs['href']
+                category_products_view_page_urls.append(f"https://www.woolworths.co.za/{self.__current_product_view_page_url}")                
                 product_price = product.find('strong', {'class': 'price'}).text
                 product_promotion = product.find('div', {'class': 'product__price-field'}).find('a')
-
+        
                 if product_promotion:
                     product_promotion = product_promotion.text
                     print(f"{self.__current_product_name}\n{product_price}\n{product_promotion}\n{product_image}\n\n")                
                 else:
                     print(f"{self.__current_product_name}\n{product_price}\n{product_image}\n\n")
-        print("\nOperation complete.")
+        sleep(10)
+        results = map_function(self.__download_and_store_product_image, category_products_view_page_urls)
+        for result in results:
+            if result == False:
+                print("Product images were not successfully stored.")
+                return
+        print("\nOperation successfully complete.")
 
-    def scrape_items_per_category(self):
+    def scrape_items(self):
         category_names = list(self.__product_categories.keys())
         category_details = list(self.__product_categories.values())
         if category_names.__sizeof__() == category_details.__sizeof__(): 
             for (category_name, category_detail) in zip(category_names, category_details):
                 self.__current_category_name = category_name
                 self.__current_category_id = category_detail['ID']
-                self.__category_page_urls.append(f'{self.__products_page}{self.__current_category_name}/_/{self.__current_category_id}/?No=120&Nrpp={self.__max_items_per_category}')
-            map_function(self.scrape_items_from_category, self.__category_page_urls)
+                sleep(10)
+                self.__scrape_items_from_category(f'{self.__products_page}{self.__current_category_name}/_/{self.__current_category_id}/?No=120&Nrpp={self.__max_items_per_category}')
+
+    def __download_and_store_product_image(self, url):
+        # Retrieve image url from each product's view page.
+        page = parse_response(send_request(url))
+        product_image_url = page.find('meta', {'data-react-helmet': 'true', 'property': 'og:image'}).attrs['content']
+        sleep(10)
+        store_image(send_request(product_image_url), self.__name, url.split('/')[-3])
 
     def get_product_images_path(self):
         pass

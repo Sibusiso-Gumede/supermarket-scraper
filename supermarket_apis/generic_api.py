@@ -1,7 +1,6 @@
 from abc import ABC, abstractclassmethod
 from requests import get
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin
 import json
 
 class Supermarket(ABC):

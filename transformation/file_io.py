@@ -32,10 +32,10 @@ def retrieve_webpage(content_name: str, path_: str) -> bytes:
             buffer = file.read(buffer_size)
     return payload
 
-def store_image(img: bytes, image_name: str) -> bool:
+def store_image(img: bytes, supermarket_name: str, image_name: str) -> bool:
     '''Stores byte content in image format(png, jpeg, etc).'''
     
-    path_ = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{image_name.split('.')[1]}/Product Images/{image_name.split('/')[-1]}.png"
+    path_ = f"/home/workstation33/Documents/Development Environment/Projects/discount_my_groceries/dmg_django/supermarket_resources/{supermarket_name}/product images/{image_name}.png"
     try:
         image = Image.open(BytesIO(img))
     except UnidentifiedImageError or FileNotFoundError:
