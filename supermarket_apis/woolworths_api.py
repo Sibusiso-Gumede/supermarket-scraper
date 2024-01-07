@@ -166,7 +166,7 @@ class Woolworths(Supermarket):
         page = parse_response(send_request(url))
         product_image_url = page.find('meta', {'data-react-helmet': 'true', 'property': 'og:image'}).attrs['content']
         sleep(10)
-        store_image(send_request(product_image_url), self.__name, url.split('/')[-3])
+        store_image(send_request(product_image_url), self.__name, url.split('/')[-3], self.__current_category_name)
 
     def get_product_images_path(self):
         pass
